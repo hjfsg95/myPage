@@ -49,14 +49,16 @@
                     <code>
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+    "width": 250,
+    "height": 250,
     "data": {
-        "url": "random_data.json"
+        "url": "https://uiuc-ischool-dataviz.github.io/spring2019online/week02/building_inventory.csv"
         },
-    "mark": "circle",
+    "mark": "bar",
     "encoding": {
-        "x": { "field": "A", "type": "quantitative"},
-        "y": { "field": "B", "type": "quantitative"},
-        "size": { "field": "C", "type": "quantitative"}
+        "x": { "field": "Total Floors", "type": "quantitative", "bin": true},
+        "y": { "aggregate": "sum", "field": "Square Footage", "type": "quantitative"},
+        "color": {"aggregate": "average", "field": "Square Footage"}
     }
 };
                     </code>
@@ -70,13 +72,13 @@
                     "width": 250,
                     "height": 250,
                     "data": {
-                        "url": "random_data.json"
+                        "url": "https://uiuc-ischool-dataviz.github.io/spring2019online/week02/building_inventory.csv"
                         },
-                    "mark": "circle",
+                    "mark": "bar",
                     "encoding": {
-                        "x": { "field": "A", "type": "quantitative"},
-                        "y": { "field": "B", "type": "quantitative"},
-                        "size": { "field": "C", "type": "quantitative"}
+                        "x": { "field": "Total Floors", "type": "quantitative", "bin": true},
+                        "y": { "aggregate": "sum", "field": "Square Footage", "type": "quantitative"},
+                        "color": {"aggregate": "average", "field": "Square Footage"}
                     }
                 };
                 vegaEmbed('#vis', yourV1Spec);

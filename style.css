@@ -93,12 +93,13 @@ body {
 
 pre {
     width: 100%;
+    max-width: 600px;
 }
 
 pre code {
     display: block;
     background: #f4f4f4;
-    padding: 5px 5px;
+    padding: 5px 20px;
     border: 1px solid #eee;
     font-size: 13px;
     white-space: pre-wrap;
