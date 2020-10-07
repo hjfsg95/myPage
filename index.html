@@ -5,38 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JING HUANG</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.16.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.16.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"></script>
 </head>
 <body>
 
     <!-- Side Bar -->
+
     <div id="sidebar">
+        <!-- Icon and intro -->
         <div id="sidebar-center">
             <img src="images/photo.png" alt="portrait">
             <p id="my-name">JING HUANG</p>
             <p id="brief-intro">Master student of statistics</p>
         </div>
-    </div><!-- End of Side Bar -->
+        <!-- Selection line -->
+        <img src="images/line.png" alt="line"> 
+    </div>
 
-    <!-- Selection Tags -->
-    <div id="selection">
-        <img src="images/line_tag_text.png" alt="linetag"> 
-        <!-- <p class="tag" id="home">HOME</p>
-        <p class="tag" id="research">RESEARCH</p>
-        <p class="tag" id="project">PROJECT</p>
-        <p class="tag" id="cv">CV</p> -->
-    </div><!-- End of Selection Tags -->
 
-    <!-- Icons -->
-    <div>
 
-    </div><!-- End of Icons -->
 
-    <!-- Main Content -->
-    <div id="main-content">
-        <p class="subtitle"><span>A</span>BOUT ME</p>
-        <p>hi i'm Jing, I am doing my master degree of statistics here at UIUC, and I just started my second year of study. I'm interested in stats, coding and design. I love data visualization and I want to become a data scientist focusing on visualization. </p>
-        <img src="images/14_colored.png" alt="main image">
-    </div><!-- End of Main Content -->
 
     <!-- Others -->
     <div id="bottom-right">
@@ -45,12 +35,57 @@
         <div class="circle" id="circle-3"></div>
     </div>
 
-    <div id="top-right">
-        <div class="icon" id="icon-1"><img src="images/github.png"></div>
-        <div class="icon" id="icon-2"><img src="images/mail.png"></div>
-        <div class="icon" id="icon-3"><img src="images/web.png"></div>
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Title -->
+        <p class="title"><span>H</span>OMEWORK 5</p>
+        <P id="netid">Name: Jing Huang (jingh7)</P>
+
+        <!-- Code & Visualization -->
+        <div id="code_vis"></div>
+            <!-- Code -->
+            <div id="vgcode" class="column">
+                <pre>
+                    <code>
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+    "data": {
+        "url": "random_data.json"
+        },
+    "mark": "circle",
+    "encoding": {
+        "x": { "field": "A", "type": "quantitative"},
+        "y": { "field": "B", "type": "quantitative"},
+        "size": { "field": "C", "type": "quantitative"}
+    }
+};
+                    </code>
+                </pre>
+            </div>
+            <!-- Vega-Lite Visualization -->
+            <div id="vis" class="column">        
+            <script type="text/javascript">
+                var yourV1Spec = {
+                    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+                    "width": 250,
+                    "height": 250,
+                    "data": {
+                        "url": "random_data.json"
+                        },
+                    "mark": "circle",
+                    "encoding": {
+                        "x": { "field": "A", "type": "quantitative"},
+                        "y": { "field": "B", "type": "quantitative"},
+                        "size": { "field": "C", "type": "quantitative"}
+                    }
+                };
+                vegaEmbed('#vis', yourV1Spec);
+            </script>
+            </div>
+        </div>
+
     </div>
-    <!-- End of Others -->
+    
 
 </body>
 </html>
