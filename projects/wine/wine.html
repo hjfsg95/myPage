@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JING HUANG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../project-style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+    <div id="navigation-bar">
+        <div id="texts">
+            <button id="back" onclick="window.location.href='../../index.html'"></button>
+            <p><a href="#Introduction">Introduction</a></p>
+            <p><a href="#descriptive">Descriptive Analysis</a></p>
+            <p><a href="#predict">Predicting Wine Scores</a></p>
+            <p><a href="#recommendation">Winery Recommendation</a></p>
+        </div>
+        <div id="bar"></div>
+    </div>
+    <article class="main" id="Projects">
+        <!-- Title -->
+        <h1 class="title"><span class="paint">W</span>ine Review and Recommendation</h1>
+        <P class="time"> Nov 2019 </P>
+        
+        <!-- content -->
+        <div class="content">
+            <section id="introduction">
+                <h3>Introduction</h3>
+                <p>This report uses the a wine reviews dataset from <a href="https://www.kaggle.com/zynicide/wine-reviews">Kaggle</a>. The dataset was scraped from WineEnthusiast, a wine review website. It contains 129971 observations, each corresponding to a certain wine and its ratings/points, and features including name, geographic information, variety, price and text review. The report has two goals: 1. to predict the rating of wines using other features; 2. to recommend 5 different wineries for a certain customer. For the first object, this report uses text mining and two machine learning models; for the recommendation, the analysis is built based on similarity measurement. Details are discussed in part3 and part4 respectively.</p>
+            </section>
+
+            <section id="descriptive">
+                <h3>Descriptive Analysis</h3>
+                <h4>Variables</h4>
+                <p>Below is a descriptive table of variables in the dataset:</p>
+                <img src="project_images/table.png" width="700" alt="variables">
+                <p>This implies to us that we need to take care of variables that has too many levels (like winery), and to find a way to deal with NA values in the dataset.</p>
+                <h4>Points</h4>
+                <p>Since points is our response variable in the regression part, we are certainly interest in its distribution. From the left plot we can notice that the all points are greater or equal than 80. Also, the points are not continuous, instead distributed stepwise to only 21 levels. But doing a classification would be too complex, so I’ll use regression methods.</p>
+                <img src="project_images/y.png" width="350" alt="points">
+            </section>
+
+            <section id="predict">
+                <h3>Predicting Wine Scores</h3>
+                <h4>Data Preprocessing – Description</h4>
+                <p>For description data, what I do is separating them into separated words, counting their frequencies, and generate a matrix. Here is a simple example:</p>
+                <img src="project_images/freq1.png" width="700" alt="variables">
+                <p>Using tm package in R, we get a matrix showing how frequently words are appearing in this piece of description:</p>
+                <img src="project_images/freq2.png" width="700" alt="points">
+                <p>I choose not to do SVD in order to keep the results interpretable, and keep 1800 words (columns) for the text matrix.</p>
+                
+                <h4>Data Preprocessing – Other Features</h4>
+                <p>Our first task is to clean the dataset and transform the variables. My steps are:</p>
+                <ul>
+                    <li>Drop: X1, country, region_2, taster_twitter_handle, title, points.</li>
+                    <li>Extract region, year from title.</li>
+                    <li>Keep regions in region, variety, winery from top-10 lists searched from Google.</li>
+                    <li>Replace NA values in categorical variables by “Others”, and replace NA values in numerical variables by median values.</li>
+                </ul>
+
+                <h4>Model 1 – Ridge Regression</h4>
+
+                <p><b>1. Introduction</b></p>
+                <p>In this part, I use ridge regression to predict the points (response variable). Ridge is a penalized version of linear regression that optimize:</p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mfrac>
+                        <mn>1</mn>
+                        <mn>2</mn>
+                    </mfrac>
+                    <mi>&vert;&vert;</mi>
+                    <mi>y</mi>
+                    <mo>-</mo>
+                    <mn>X&beta;</mn>
+                    <msup>
+                        <mi>&vert;&vert;</mi>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>+</mo>
+                    <mi>&lambda;</mi>
+                    <mi>&vert;&vert;</mi>
+                    <mi>&beta;</mi>
+                    <msup>
+                        <mi>&vert;&vert;</mi>
+                        <mn>2</mn>
+                    </msup>
+                    </math>
+                </p>
+                <p>λ is the shrinkage parameter of coefficients.</p>
+
+                <p><b>2. Modeling</b></p>
+                <p>In order to fit this linear regression, I first convert all categorical variables to 0-1 variables. The model matrix then has 129971 rows and 2241 columns.
+                    Dataset was split into training data and testing data at 7:3. Fittings and 10-fold cross validations are performed on training data, and prediction and evaluating are performed on testing data.
+                </p>
+                <p>Two λ values are suggested by 10-fold cross validation: lambda.min that gives the minimum validating MSE and lambda.1se that is one standard diviation larger than lambda.min. </p>
+                <img src="project_images/result.png" alt="lambdas">
+
+                <p><b>3. Results</b></p>
+                <p>The lambda.min is quite small, because our model matrix contains limited information. There’s no huge difference between model with lambda.min and model with lambda.1se. Since lambda.1se provides stronger shrinkage and thus reduce the risk of overfitting, I will use lambda.1se. And left is a line plot showing true points v.s. predicted points. The prediction is more precise for points in the middle, and runs deviated at both boundaries.</p>
+                <p>Though ridge is a good model for prediction, it does’t supply a direct way for us to find which features are crutial in prediction. So I will do another regression method that can give us what we need, the LightGBM model.</p>
+                <img src="project_images/y-yhat.png" alt="ridge plot" width=400>
+
+                <h4>Model 2 – Light GBM</h4>
+                <p><b>1. Introduction</b></p>
+                <p>Light GBM is an efficient gradient tree boosting method. It uses subsampling and bagging methods to reduce computational cost, and let trees grow in a best-first order at each splitting step. Besides, by doing lightGBM we don’t need to convert categorical variables to dummy variables, thus the results are interpretable.</p>
+
+                <p><b>2. Modeling</b></p>
+                <p>First step is data preprocessing, which is similar to what I did in Ridge, except for that category variables are encoded to numerical factors.</p>
+                <p>I will keep most parameters as default, set learning_rate = 0.2, nrounds = 300 (common choices), and tune the key parameter num_leaves according to test MSE. 
+                    The tuning results can be seen in the left table. I pick num_leaves = 32 finally, because it significantly reduces the error and it’s the quicker one among all that fit well. 
+                </p>
+                <img src="project_images/leaves.png" alt="leaves" width=250>
+
+                <p><b>3. Results</b></p>
+                <p>The LightGBM algorithm measures variables’ total gain of splitting for us. Here I plot the top 9 variables. We can see that price is the leading component for predicting wines’ points, not surprising because we all know expensive wines are better. Region and winery (actually containing similar geographical information) are also important variables. We also see two text variables in our top 9 list: rich and complex (and they are sort of synonymous). That means a wine that has richer, more complex taste will gain higher ratings from tasters.</p>
+                <img src="project_images/gain.png" width="600" alt="gain">
+            </section>
+
+            <section id="recommendation">
+                <h3>Winery Recommendation</h3>
+                <p>In this part, we are going to recommend 5 wineries to our imaginary customer (Let's call him Bob). Here are Bob's preferences:</p>
+                <ul>
+                    <li>Variety: Pinot Noir</li>
+                    <li>Price: less than 20 dollars</li>
+                    <li>Has a fruity taste</li>
+                </ul>
+                <p>I think the preference on taste is fixed and strong, while variety and price are more flexible preferences. If the taste is satisfied, why would Bob mind paying a little bit more for a different type of wine? So, in this part what I’m going to do is, first recommend N wines that matches the preferences (fruity, but may have prices higher than 20 or from another variety), and recommend wineries according to those wines.</p>
+
+                <h4>Find a “Previous Purchase” Wine for Bob</h4>
+                <p>In order to find wines that Bob may like, we need to first find a reference, or an imaginary purchasing history of Bob. Here I pick the wine with highest points among all wines that satisfy the three preference simultaneously. What I pick is a rosado (a very fruity type of wine).</p>
+                <img src="project_images/wine.png" alt="wines">
+                
+                <h4>Find Wines Similar to “Previous Purchase”</h4>
+                <p>Here I use a Gaussian distance to measure the similarity between the “previous purchase” and all other fruity wines (not limited by variety and price). </p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi>D = exp(</mi>
+                    <mo>-</mo>
+                    <mfrac>
+                        <mn>1</mn>
+                        <mn>2</mn>
+                    </mfrac>
+                    <munderover>
+                        <mo>&Sum;</mo>
+                        <mrow>
+                            <mi>k</mi>
+                        </mrow>
+                    </munderover>
+                    <mn>(</mn>
+                    <msub>
+                        <mi>x</mi>
+                        <mi>i</mi>
+                    </msub>
+                    <mo>-</mo>
+                    <msub>
+                        <mi>x</mi>
+                        <mi>c</mi>
+                    </msub>
+                    <msup>
+                        <mn>)</mn>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>/</mo>
+                    <msup>
+                        <msub>
+                            <mi>&sigma;</mi>
+                            <mi>k</mi>
+                        </msub>
+                        <mn>2</mn>
+                    </msup>
+                    <mn>)</mn>
+                    </math>
+                </p>
+                <p>In order to match the other two preferences of Bob, when calculating the similarity, I will pay more attention to price and variety by lifting up their weights (or narrowing corresponding σ_k^2).  Also, I modify the price of the “previous purchase” to a lower level. 
+                    Here’s a table showing our “previous purchase” wine and top 5 similar wines (There are 209 similar wines in total).
+                </p>
+                <img src="project_images/recom_wines.png" alt="wines" width=800>
+
+                <h4>Recommend Wineries</h4>
+                <p>From all 209 recommending wines, I pick 4 wineries that appear most frequently and 1 winery that have highest average score:</p>
+                <img src="project_images/recom_winery.png" alt="wineries" width=300>
+                <ul>
+                    <li>Most frequent: Vignerons de Buxy , Manuel Olivier, McManis, Nuiton-Beaunoy</li>
+                    <li>Highest score: Balletto</li>
+                </ul>
+                <p>The result is quite interesting. Recommended wineries come from two provinces: Burgundy in France and California in US. This may indicate a combined effect, that wineries close to each other geographically together do better in producing a certain type of wine.</p>
+
+            </section>
+        </div>
+        <div class="blank"></div>
+    </article>
+    <!-- End of Main -->
+</body>
+<script src="style.js"></script>

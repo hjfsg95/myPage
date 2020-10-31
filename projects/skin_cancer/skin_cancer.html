@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JING HUANG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../project-style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+    <div id="navigation-bar">
+        <div id="texts">
+            <button id="back" onclick="window.location.href='../../index.html'"></button>
+            <p><a href="#introduction">Introduction</a></p>
+            <p><a href="#process">Data Preprocessing</a></p>
+            <p><a href="#pixels">Classification Based on Pixels</a></p>
+            <p><a href="#more">More Interpretable Features </a></p>
+        </div>
+        <div id="bar"></div>
+    </div>
+    <article class="main" id="Projects">
+        <!-- Title -->
+        <h1 class="title"><span class="paint">S</span>kin Cancer Classification </h1>
+        <P class="meta"> Dec 2019
+        <p class="meta"> Co-author: Yuanyuan Zheng </p>
+        </P>
+        
+        <!-- content -->
+        <div class="content">
+            <section id="introduction">
+                <h3>Introduction</h3>
+                <p>The dataset contains images of 150 benign lesions and 150 malignant lesions offered by ISIC. Our goal for this project is to build classification models based on 300 images of moles with statistical learning methods to identify whether a mole is malignant only by its image information. </p>
+                <p>We mainly use two different approaches: learning on pixels and learning on extracted features. For the first part, we do a singular value decomposition to a total of 90000 pixels and pick only 40 principals variables, then we train three different classification models (Random Forest, SVM and XGBoost) on them. We get about 70% accuracy and 68% sensitivity for SVM, and 72% accuracy, 71% sensitivity for random forest, and 72% accuracy, 70% sensitivity for xgboost.</p>
+                <p>For the second part, we extract 9 biological variables manually, indicating a lesion’s color variance, color gradient, ratio of blue surface, border irregularity and asymmetry, and use them to do classification without using any variable from part 1. Results of the second approach approximates the results from learning pixels, which is 71% testing accuracy and 80% testing sensitivity. showing that our features do catch the pattern of malignant lesions.</p>
+                <p>One concern of us is that detecting malignant lesions is more important than identifying benign lesions. So, will pay more attention on sensitivity (ratio of correctly detected malignant lesions). </p>
+            </section>
+
+            <section id="process">
+                <h3>Data Preprocessing</h3>
+                <p>The original images are large, and most of them are 600*450 sized. So, we resized all the picture to 200*150 pixels large and read them into R by RGB channel. Each image is read as a 200*150*3 array, then is flattened to a vector of 90000 length.</p>
+                <p>Now the column size is much larger than the row size of our dataset. To avoid dimensionality curse, we apply principle component analysis (PCA) by singular value decomposition (SVD), which is:</p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi>X = US</mi>
+                    <msup>
+                        <mi>V</mi>
+                        <mi>T</mi>
+                    </msup>
+                </p>
+                <p>We pick 40 columns from the reformed X. The 40 columns contain 95% variation of 90000 total columns. </p>
+                <p>Considering lack of training data, we use bootstrap to split the images into training and testing set. 300 images with replacement form the training data, and the 105 images left are the testing data.</p>
+            </section>
+
+            <section id="pixels">
+                <h3>Classification Based on Pixels</h3>
+                <h4>Model 1 - SVM</h4>
+                <p><b>1. Introduction</b></p>
+                <p>Support Vector Machines (SVM) are a machine learning paradigm used widely for classification problems recent years. The attractive thing of this model is that, though it is a linear classifier, it can be used to deal with nonlinear classification problems with kernel trick.</p>
+                <p><b>2. Tuning</b></p>
+                <p>In this part we try three classical kernels and compare their results: radial (RBF)l kernel, linear kernel and polynomial kernel. Different parameters are used for these kernels, and we search the best model that gives best validation accuracy for each kernel first, then compare the results between kernels. For RBF kernel, we tuned Gamma and cost, and for the other two, we tuned Gamma, cost and coef0.</p>
+                <p><b>3. Results</b></p>
+                <table class="center">
+                    <tr>
+                      <th>Kernel</th>
+                      <th>Cost</th>
+                      <th>Gamma</th>
+                      <th>Coef0</th>
+                      <th>Accuracy</th>
+                      <th>sensitivity</th>
+                    </tr>
+                    <tr>
+                      <td>RBF</td>
+                      <td>3</td>
+                      <td>0.02</td>
+                      <td></td>
+                      <td>0.69982</td>
+                      <td>0.67</td>
+                    </tr>
+                    <tr>
+                        <td>Linear</td>
+                        <td>0.01</td>
+                        <td></td>
+                        <td></td>
+                        <td>0.66055</td>
+                        <td>0.54</td>
+                    </tr>
+                    <tr>
+                        <td>Polynomial</td>
+                        <td>0.1</td>
+                        <td>0.02</td>
+                        <td>1</td>
+                        <td>0.69725</td>
+                        <td>0.52</td>
+                    </tr>
+                </table>
+                <p>Here are our results from cross validation, including the kernel used, the best parameter combination, accuracies and sensitivities on testing set are shown in the table above.
+                    It’s shown from the table that when the corresponding best parameter combinations are used, RBF kernel results in the best predicting accuracy and prediction of 70% and 67% respectively. The sensitivity is a bit lower than the accuracy, which means our svm is not performing well on detecting malignant lesions.
+                </p>
+
+                <h4>Model 2 – Random Forest</h4>
+
+                <p><b>1. Introduction</b></p>
+                <p>Random forest is a tree-based ensemble learning model. It does random subsampling to the variables, generate results from different trees and hence get more robust results. We believe it will perform well on our data. </p>
+                
+
+                <p><b>2. Tuning</b></p>
+                <img src="project_images/rf1.png" alt="rf1" width=400 class="float-right">
+                <p>We fix our tree numbers to be 300, we believe it’s a reasonable number that avoids overfitting. Then we use testing score to search the best parameter combination of mtry and nodesize given ntree=300. Again, prediction accuracy on testing set is used as our metric.
+                    It’s demonstrated from the line graphs that, with 300 trees a relatively large nodesize and large mtry return highest predicting accuracy and sensitivity. And this is our final choice. But note that both mtry=20 and nodesize=9 show large variation. Hence if we want a more valid result, mtry=15 and nodesize=3 will be a better choice.
+                </p>
+
+                <p><b>3. Results</b></p>
+                <p>With mtry=15 and nodesize=3, predicting accuracy and sensitivity on testing set are 72.38% and 71.74% respectively. The result is much better than the SVM, showing that random forests do perform good on classification with small datasets.
+                    And we notice that the result varies greatly according to the random seed we use. Because many malignant lesions look very similar to benign ones, and even dermatologist can’t 100% correctly classify them. So if we get many of these unidentifiable malignant lesions in our testing set, the result would drop rapidly. 
+                </p>
+
+                <h4>Model 2 – XGBoost</h4>
+                <p><b>1. Introduction</b></p>
+                <p>Extreme Gradient Boosting (XGBoost) is a fast tree-based gradient boosting method. We think gradient boosting can handle our problem well because it implements weight to the variables. And we choose XGBoost because it adds information second-order gradients and it runs very fast.</p>
+                
+                <p><b>2. Tuning</b></p>
+                <img src="project_images/xgb1.png" alt="xgb1" width=300 class="float-right">
+                <p>We use random search method to tune the 3 most crutial parameters in Xgboost: the eta, nrounds and max_depth. Our searching area is:
+                    <ul>
+                        <li>eta: 0.01 to 0.3</li>
+                        <li>nrounds: 100 to 500</li>
+                        <li>max_depth: 3 to 10</li>
+                    </ul>
+                    We randomly tested 30 different parameter combinations, and the best one gives 87% validation accuracy, with max_depth=4, eta=0.2776 and nrounds=159. Based on the max_depth and eta, we then find a better nrounds parameter. From the right plot we can see that the model converges far before 159 rounds. We choose nrounds=25.                     
+                </p>
+        
+                <p><b>3. Results</b></p>
+                <p>We then apply eta=0.2776, max_depth=4 and nrounds=25 to our testing data. The testing accuracy is 72.38% and the sensitivity is 69.56%. The result is not as good as random forest. (Since we used random search, this might not be the best parameters for XGBoost. ) 
+                    In general, we recommend random forest for this task.
+                </p>
+            </section>
+
+            <section id="more">
+                <h3>More Interpretable Features </h3>
+                <h4>Literature Review</h4>
+                <p>
+                    Many literatures have studied into the features of skin cancer. 
+                    In <cite><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2683694/">Extraction of Specific parameters for skin tumour classification</a></cite>, written by M. Messadi, A. Bessaid and A. Taleb-Ahmed, it says:
+                    <q>
+                        We used the ABCD rule (A: asymmetry, B: border, C: colour and D: diameter) to help distinguish between these different tumours. The choice of this rule is based on dermatology criteria: shape, color and symmetry.
+                    </q>
+                    And on <cite><a href=" https://molescope.com/skin-cancer/">MoleScope</a></cite>, a medical website, there are more explanations:
+                    <q>
+                        Asymmetrical moles are abnormal and should be checked by a doctor.” “Blurred, jagged, or irregular borders are a sign that the mole could be cancerous.” “Healthy moles usually have one even color, while irregular moles can contain multiple shades of color. It is also important to make note of any blue or white colors that may be present in your moles, as this is a sign that the mole may be cancerous.”, “In general, if a mole is larger than 6 mm, it is a warning sign.” and “If your mole develops symptoms like itching, tenderness or bleeding, or is evolving in any way over time, this is a warning sign.
+                    </q>
+                </p>
+                <p>So our guidelines for extracting features are as follows:</p>
+                <ul>
+                    <li>Malignant lesions are more asymmetrical in shapes</li>
+                    <li>Malignant lesions have more irregular borders</li>
+                    <li>Malignant lesions have higher color variance (both in color and in brightness)</li>
+                    <li>Blue color appears more frequently on malignant lesions</li>
+                </ul>
+
+                <h4>Feature Extracting</h4>
+                <img src="project_images/workflow.png" alt="workflow" width=300 class="float-right">
+                <p>We first implement contrast enhancement and median filter to the images, in order to clean the pixels. We also removed the camera shades in the image by auto filling and adding a mask created manually. Image size is kept as 200*150 pixels.</p>
+                
+                <p><b>1. Irregularity</b></p>
+                <p>We use a Triclass Thresholding technique to get a binary image. The border length p is then calculated by counting pixels that have a non-zero x gradient or y gradient, area a is number of white pixels. Our measurement for border irregularity is: </p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi>Irregularity = </mi>
+                    <mfrac>
+                        <msup>
+                            <mi>p</mi>
+                            <mn>2</mn>
+                        </msup>
+                        <mi>a</mi>
+                    </mfrac>
+                </p>
+
+                <p><b>2. Asymmetry</b></p>
+                <p>We calculate the differences between areas about the horizontal & vertical axes, get Δ<sub>s1</sub> and Δ<sub>s2</sub>, then we rotate the image 45° and get the same differences between areas Δ<sub>s3</sub> and Δ<sub>s4</sub>. We take the minimum difference among these four as the measurement of asymmetry. </p>
+                <img src="project_images/asymmetry.png" alt="asymmetry" width=200>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi>Asymmetry = min(</mi>
+                    <msub>
+                        <mn>&Delta;</mn>
+                        <mi>s1</mi>
+                    </msub>
+                    <mi>,</mi>
+                    <msub>
+                        <mi>&Delta;</mi>
+                        <mi>s2</mi>
+                    </msub>
+                    <mi>,</mi>
+                    <msub>
+                        <mi>&Delta;</mi>
+                        <mi>s3</mi>
+                    </msub>
+                    <mi>,</mi>
+                    <msub>
+                        <mi>&Delta;</mi>
+                        <mi>s4</mi>
+                    </msub>
+                    <mn>)</mn>
+                </p>
+
+                <p><b>3. Color Variance</b></p>
+                <p>Variances of colors within the lesion area are calculated on R, G, B channels respectively.</p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mn>V</mn>
+                    <mo> = </mo>
+                    <mfrac>
+                        <mrow>
+                            <mo>&sum;</mo>
+                            <mn>(</mn>
+                            <msub>
+                                <mi>R</mi>
+                                <mi>i</mi>
+                            </msub>
+                            <mo>-</mo>
+                            <mi>avg(R)</mi>
+                            <msup>
+                                <mn>)</mn>
+                                <mn>2</mn>
+                            </msup>
+                        </mrow>
+                        <mi>n</mi>
+                    </mfrac>
+                </p>
+                <p>And to catch the transition of color, we also calculate the mean gradient of R, G, B color along both x’s and y’s directions.</p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mn>G</mn>
+                    <mo> = </mo>
+                    <mi>avg(|</mi>
+                    <msub>
+                        <mi>&Delta;</mi>
+                        <mi>x</mi>
+                    </msub>
+                    <msub>
+                        <mi>R</mi>
+                        <mi>i</mi>
+                    </msub>
+                    <mi>|</mi>
+                    <mo>+</mo>
+                    <mi>|</mi>
+                    <msub>
+                        <mi>&Delta;</mi>
+                        <mi>y</mi>
+                    </msub>
+                    <msub>
+                        <mi>R</mi>
+                        <mi>i</mi>
+                    </msub>
+                    <mi>|)</mi>
+                    <mo>&times;</mo>
+                    <mn>10</mn>
+                </p>
+
+                <p><b>4. Ratio of Blue Surface</b></p>
+                <img src="project_images/background.png" alt="backgroud" width=300 class="float-right">
+                <p>We find that some images are blue casted, so the first thing we do is to fix color cast by subtracting an average skin color from the lesion. Then we get the ratio of blue surface by calculating the number of pixels where blue is higher than red and green divided by total lesion area.</p>
+                <p class="math center">        
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <msub>
+                        <mi>r</mi>
+                        <mi>b</mi>
+                    </msub>
+                    <mo>=</mo>
+                    <mfrac>
+                        <msub>
+                            <mi>S</mi>
+                            <mi>b</mi>
+                        </msub>
+                        <mi>S</mi>
+                    </mfrac>
+                </p>
+
+                <h4>Modeling</h4>
+                <p>In this part, we drop all pixel features we used in part 1 and use only features we extracted. Random Forest and XGboost are chosen to do the classification tasks. Bootstrap splitting and tuning processes are the same as what we did in part 1, with no repeat here. Again, we are concerned about both the accuracy and sensitivity, which is the models’ ability to detect malignant lesions.</p>
+                
+                <p><b>1. Random Forest</b></p>
+                <p>
+                    With nodesize = 3, mtry = 3 and ntree = 200, we get 71.43% prediction accuracy and 80.43% sensitivity performed on testing images. We plot the variable importance (mean decreased Gini) in the right picture. Color gradient features are proved to be most useful (while red gradients win the 1st place), followed by the ratio of blue surface and two shape features. Color variance features are not contributing as much as the color gradients, because these three variables calculate the mean variation of color and are not containing spatial relationship of colors. 
+                <img src="project_images/rf2.png" alt="rf2" width=500>
+                <p>
+                    We plot our data on two axes, the rgrad and blueratio. We find that there are certain patten caught by these two variables. Looking at the points in the upper right: many malignant lesions do have very high blue surface ratio and high red color gradient. And our model is capable of correctly identify them. But for those malignant lesions that has both low blue ratio and red gradient, we misclassified many of them.
+                </p>
+                <img src="project_images/rf3.png" alt="rf3" width=500>
+                </p>
+
+                <p><b>2. XGBoost</b></p>
+                <p>
+                    Now we try the XGBoost. And because it is tree-based, we can also get variable gain calculated. For tuning parameter, we use random search with 20 different combinations of max_depth, eta and nrounds, and choose one with the highest overall accuracy. Our final model attains 72% accuracy and 76% sensitivity. Right is a picture showing the variable importance given by XGboost. It is similar with that from random forest. Again, red gradient is the most important feature. We guess it is because brown is consisted mostly by red color and thus it catches the color transition of the many brown lesions. 
+                </p>
+                <img src="project_images/xgb2.png" alt="xgb2" width=500>
+
+                <p><b>3. Comparison</b></p>
+                <p>Using XGboost, we get a little bit higher accuracy but much lower sensitivity than the random forest. We suggest using the random forest, because sensitivity is sometimes more important than accuracy. For those lesions who are misclassified as malignant, we can still do b-ultrasound and CT scan for further diagnosis.</p>
+            
+                <h4>Discussion</h4>
+                <p>
+                    One drawback of our models is we fail to catch the white color in the lesion. The white surface of the lesion is often classified as the background. We think that is because the white color is not “white” enough. As a correction, we implement contrast enhancement to the images, and hence get better results. But many white lesions are still not segmented well. An alternative algorithm might be the snake algorithm, which directly finds the contour of the lesion. 
+                </p>
+                <img src="project_images/discussion.png" alt="example" width=300 class="float-right">
+                <p>
+                    Another drawback of our models is that the result varies largely each time we split the data with a different random series. Accuracy and sensitivity in both models vary from 70% to 80%. There are two possible explanations for that: 1. Lack of training data; 2. Our features are missing some information and are thus not capable of detecting certain features. We check the images that are misclassified. One representative is the lesion shown in the right, it’s a regular-shaped lesion, generally brown, but with many thin black lines crawling on its surface. Human eyes can easily catch those small lines, but the mean color variance and mean color gradients are unable to describe this feature. One potential solution we considered is calculating variance and gradients on a rolling window, with relatively small window sizes. 
+                </p>
+            </section>
+        </div>
+        <div class="blank"></div>
+    </article>
+    <!-- End of Main -->
+</body>
+<script src="style.js"></script>

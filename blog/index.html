@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JING HUANG</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.16.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.16.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"></script>
+</head>
+<body>
+
+    <!-- Side Bar -->
+
+    <div id="sidebar">
+        <!-- Icon and intro -->
+        <div id="sidebar-center">
+            <img src="images/photo.png" alt="portrait">
+            <p id="my-name">JING HUANG</p>
+            <p id="brief-intro">Master student of statistics</p>
+        </div>
+        <!-- Selection line -->
+        <img src="images/line.png" alt="line"> 
+    </div>
+
+
+
+
+
+    <!-- Others -->
+    <div id="bottom-right">
+        <div class="circle" id="circle-1"></div>
+        <div class="circle" id="circle-2"></div>
+        <div class="circle" id="circle-3"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Title -->
+        <p class="title"><span>H</span>OMEWORK 5</p>
+        <P id="netid">Name: Jing Huang (jingh7)</P>
+
+        <!-- Code & Visualization -->
+        <div id="code_vis"></div>
+            <!-- Code -->
+            <div id="vgcode" class="column">
+                <pre>
+                    <code>
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+    "width": 250,
+    "height": 250,
+    "data": {
+        "url": "https://uiuc-ischool-dataviz.github.io/spring2019online/week02/building_inventory.csv"
+        },
+    "mark": "bar",
+    "encoding": {
+        "x": { "field": "Total Floors", "type": "quantitative", "bin": true},
+        "y": { "aggregate": "sum", "field": "Square Footage", "type": "quantitative"},
+        "color": {"aggregate": "average", "field": "Square Footage"}
+    }
+};
+                    </code>
+                </pre>
+            </div>
+            <!-- Vega-Lite Visualization -->
+            <div id="vis" class="column">        
+            <script type="text/javascript">
+                var yourV1Spec = {
+                    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+                    "width": 300,
+                    "height": 300,
+                    "data": {
+                        "url": "https://uiuc-ischool-dataviz.github.io/spring2019online/week02/building_inventory.csv"
+                        },
+                    "mark": "bar",
+                    "encoding": {
+                        "x": { "field": "Total Floors", "type": "quantitative", "bin": true},
+                        "y": { "aggregate": "sum", "field": "Square Footage", "type": "quantitative"},
+                        "color": {"aggregate": "average", "field": "Square Footage"}
+                    }
+                };
+                vegaEmbed('#vis', yourV1Spec);
+            </script>
+            </div>
+        </div>
+
+    </div>
+    
+
+</body>
+</html>

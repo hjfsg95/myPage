@@ -1,7 +1,11 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     /* background: #fdfaf6; */
-    font-family: 'Calibri Light';
-    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
     color: #a49e9a;
     /* letter-spacing: 1px; */
     overflow-y: scroll;
@@ -42,89 +46,29 @@ body {
 
 #sidebar #my-name {
     position: relative;
-    font-weight: 500;
-    font-size: 22px;
-    margin: 0px 5px;
+    font-size: 20px;
+    margin: 5px 5px;
     letter-spacing: 4px;
 }
 
 #sidebar #brief-intro {
     position: relative;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: -100;
-    top: -15px; left: -12px;
-    margin: 10px 5px;
-    padding: 0;
+    top: -15px; left: auto;
+    margin-top: 10px;
     letter-spacing: 2px;
     float: left;
     overflow: visible;
 }
 
-
-/* Main Content */
-
-#main-content {
-    position: relative;
-    float:left;
-    left: 240px;
-    top: 40px;
-    margin-left: 5%;
-    font-size: 100%;
-    line-height: 24px;
-}
-
-.title {
-    font-size: 2.1em;
-    letter-spacing: 3px;
-    font-weight: 550;
-    margin-bottom: 0px;
-}
-
-.title:first-letter {
-    color: #cc5e51;
-}
-
-#netid {
-    margin: 0;
-    margin-left: -5px;
-    letter-spacing: 1.5px;
-    padding: 10px;
-}
-
-pre {
-    width: 100%;
-    max-width: 600px;
-}
-
-pre code {
-    display: block;
-    background: #f4f4f4;
-    padding: 5px 20px;
-    border: 1px solid #eee;
-    font-size: 13px;
-    white-space: pre-wrap;
-    word-wrap:break-word; 
-}
-
-#vgcode {
-    position: relative;
-    float: left;
-}
-
-#vis {
-    position: relative;
-    left: 50px;
-    top: 60px;
-    float: left;
-}
-
-/* Others */
-#bottom-right {
+/* External Links */
+#links {
     position: fixed;
     bottom: 5px;
-    right: 10px;
+    left: 55px;
 }
-#bottom-right .circle {
+#links .circle {
     width: 25px;
     height: 25px;
     background: #cc5e51;
@@ -134,11 +78,150 @@ pre code {
     float: left;
     margin: 5px;
 }
-#bottom-right #circle-2 {
+#links #circle-2 {
     background: #a49e9a;
 }
-#bottom-right #circle-3 {
+#links #circle-3 {
     background: #c3bfbc;
 }
 
-/* End of Others */
+.link {
+    max-width: 100%;
+    opacity: 0%;
+} 
+
+.link:hover {
+    opacity: 100%;
+} 
+
+/* End of External Links */
+/* End of Side Bar */
+
+/* Main Content */
+
+.main {
+    position: relative;
+    float:left;
+    left: 260px;
+    top: 40px;
+    font-size: 100%;
+    line-height: 1.5em;
+    max-width: 78%;
+    margin: auto;
+    padding-right: 5px;
+}
+
+.title {
+    font-size: 2.1em;
+    letter-spacing: 2px;
+    margin-bottom: 0px;
+}
+
+.title:first-letter {
+    color: #cc5e51;
+}
+  
+/* The blogs gallary */
+
+.row {
+    margin: 8px -16px;
+}
+
+.row img {
+    width: 100%
+}
+
+.row .image {
+    height: 100%;
+}
+
+.image-div img {
+    display: block;
+    min-height: 100%;
+}
+
+.image-div img:nth-of-type(2) {
+    display: none;
+}
+
+.image-div:hover img:nth-of-type(2) {
+    display: block;
+}
+
+.image-div:hover img:nth-of-type(1) {
+    display: none;
+}
+
+.row,
+.row > .column {
+    padding: 8px;
+}
+
+.column {
+    float: left;
+    width: 28%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.main {
+    clear: both;
+}
+
+/* Content */
+
+.content {
+    padding-left: 10px;
+}
+
+.content h3 {
+    margin: 0px auto 0px auto;
+    
+    line-height: 1em;
+    font-size: 100%;
+}
+
+.content a, a.visited {
+    text-decoration: none;
+    color: #a49e9a;
+}
+
+.content a:hover {
+    text-decoration: none;
+    color: #cc5e51;
+}
+
+/* End Main Content */
+
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 900px) {
+    .column {
+    width: 50%;
+    }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+    .column {
+    width: 100%;
+    }
+
+    #sidebar {
+        visibility: hidden;
+    }
+
+    .main {
+        display: block;
+        float: none;
+        left: auto;
+        right: auto;
+        top: 0px;
+        margin: auto;
+        width: 100%;
+    }
+
+}
