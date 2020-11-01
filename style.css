@@ -148,6 +148,14 @@ body {
     display: block;
 }
 
+.image-div:active img:nth-of-type(2) {
+    display: block;
+}
+
+.image-div:active img:nth-of-type(1) {
+    display: none;
+}
+
 .image-div:hover img:nth-of-type(1) {
     display: none;
 }
