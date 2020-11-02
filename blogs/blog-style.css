@@ -4,10 +4,10 @@
 
 body {
     /* background: #fdfaf6; */
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Microsoft YaHei', sans-serif;
     font-size: 16px;
     color: #7d553c;
-    line-height: 1.8em;
+    line-height: 2em;
     /* letter-spacing: 1px; */
     overflow-y: scroll;
 }
@@ -16,9 +16,16 @@ img {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    max-width: 100%;
+}
+
+table {
+    width: 50%;   
 }
 
 .center {
+    margin-left: auto;
+    margin-right: auto;
     text-align: center
 }
 
@@ -35,7 +42,7 @@ img {
 #navigation-bar {
     position: fixed;
     bottom: 5%;
-    left: 5%;
+    right: 80%;
 }
 
 #navigation-bar p {
@@ -82,13 +89,6 @@ img {
 
 /* Main Content */
 
-.content a:visited, a:active {
-    color:#7d553c;
-}
-
-.content a:hover {
-    color: #a49e9a;
-}
 
 /* Article */
 article {
@@ -96,9 +96,19 @@ article {
     grid-template-columns: 25% 70% auto;
 }
 
-.time{
+.meta{
     grid-column: 1;
     padding-left: 15px;
+    margin-bottom: 0px;
+    line-height: 0.5em;
+}
+
+.content a, a:visited, a:active {
+    color:#7d553c;
+}
+
+.content a:hover {
+    color: #a49e9a;
 }
 
 .title {  
@@ -142,6 +152,11 @@ article {
     margin-bottom: -15px;
 }
 
+.content q{
+    font-style: italic;
+    font-size: 90%;
+}
+
 
 .content p:last-child {
     margin-bottom: 20px;
@@ -152,8 +167,12 @@ section > p {
     margin-top: 0px;
 }
 
-.blank {
+.float-right {
+    float:right;
+}
 
+.float-left {
+    float:left;
 }
 
 /* End of Content */
@@ -171,15 +190,41 @@ section > p {
 }
 
 @media screen and (max-width: 600px) {
-    .content {
-    width: 100%;
-    }
-
     article {
         display: block;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .content {
+        margin: 10px, auto, auto, auto;
+        width: 100%;
     }
 
     #navigation-bar {
         visibility: hidden;
     }
-}
+
+    table {
+        font-size: 12px;
+    }
+
+    .title {  
+        padding-left: 0px;
+    }
+    
+    .meta {
+        padding-left: 0px;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    .float-left {
+        float: cnone;
+    }
+
+    .float-right {
+        float: none;
+    }
