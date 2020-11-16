@@ -127,6 +127,10 @@ body {
     margin: 8px -16px;
 }
 
+.subtitle {
+    margin-left: -5px;
+}
+
 .row img {
     width: 100%
 }
@@ -183,15 +187,16 @@ body {
 /* Content */
 
 .content {
-    padding-left: 10px;
+    padding-left: 0px;
 }
 
 .content h3 {
-    margin: 0px auto 0px auto;
+    margin: 0px;
     
     line-height: 1em;
     font-size: 100%;
 }
+
 
 .content a, a.visited {
     text-decoration: none;
