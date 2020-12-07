@@ -39,24 +39,26 @@ h4 {
 
 /* Navigation Bar */
 
-#navigation-bar {
+#TOC {
     position: fixed;
     bottom: 5%;
     right: 80%;
 }
 
-#navigation-bar p {
+#TOC li {
     text-align: right;
     font-size: 24px;
     line-height: 1em;
+    list-style-type: none;
+    line-height: 1.5em;
 }
 
-#navigation-bar a, a:visited, a:active {
+#TOC a, a:visited, a:active {
     color: #a49e9a;
     text-decoration: none;
 }
 
-#navigation-bar a:hover {
+#TOC a:hover {
     color: #b34061;
 }
 
@@ -183,7 +185,7 @@ section > p {
     width: 100%;
     }
 
-    #navigation-bar {
+    #TOC {
         visibility: hidden;
     }
 
@@ -201,7 +203,7 @@ section > p {
         width: 100%;
     }
 
-    #navigation-bar {
+    #TOC {
         visibility: hidden;
     }
 
