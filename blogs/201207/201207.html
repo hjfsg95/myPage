@@ -36,7 +36,7 @@
   <p>谈论假设检验离不开场景，同一个分布往往有多个应用场景。举个例子，测试平均值或转化率会用到 <span class="math inline">\(T\)</span> 检验，测试最小二乘法回归的系数时用的也是 <span
       class="math inline">\(T\)</span>
     检验，前者是基于中心极限定理，而后者则基于最小二乘法的正态假设。而卡方检验的应用范围就更加广阔了。但抛开场景，检验的本质都是围绕参数构造一个统计量，这个统计量在某些条件下具有渐进的某种分布，从而给我们提供一个可量化的拒绝域。</p>
-  <h2 id="例子转化率">例子：转化率</h2>
+  <h3 id="例子转化率">例子：转化率</h3>
   <p>举一个简单例子：检验一个新方案带来的下单转化人数的变化。这个检验既可以用 <span class="math inline">\(T\)</span> 来做，也可以用卡方检验来做。我们先从 <span
       class="math inline">\(T\)</span> 说起。<span class="math inline">\(T\)</span>
     检验是一个平均值的检验，我们知道，转化率本质上是一个平均值。假设我们现在把新方案投入了测试，转化率由 <span class="math inline">\(0.1\)</span> 上升到 <span
@@ -70,8 +70,8 @@
       class="math inline">\(X\)</span>，做到信息利用最大化。于是 <span class="math inline">\(T\)</span> 检验给出了解决方案：使用样本方差 <span
       class="math inline">\(\hat{σ}^{2}=\sum(x_i−\bar{x})^2/(n-1)\)</span> 来替代总体方差 <span
       class="math inline">\(\sigma^2=p(1-p)\)</span>. 此时检验量不再符合正态分布，而是符合 <span class="math inline">\(T\)</span> 分布。</p>
-  <h2 id="t-检验">T 检验</h2>
-  <h3 id="单样本-t-检验">单样本 <span class="math inline">\(T\)</span> 检验</h3>
+  <h3 id="t-检验">T 检验</h3>
+  <h4 id="单样本-t-检验">单样本 <span class="math inline">\(T\)</span> 检验</h4>
   <p>接上。给定一个方差不为 0 的正态分布 <span class="math inline">\(Z∼Normal(μ, σ^2 )\)</span>，当我们使用样本方差 <span
       class="math inline">\(\hat{σ}^{2}\)</span> 来替代 <span class="math inline">\(\sigma^2\)</span> 后，可以构建出如下 <span
       class="math inline">\(T\)</span> 检验量：</p>
@@ -89,7 +89,7 @@
       class="math inline">\(z\)</span> 来做假设检验。</p>
     <img src="images/normal_t.jpg" alt="normal and t">
 
-  <h3 id="双样本-t-检验">双样本 <span class="math inline">\(T\)</span> 检验</h3>
+  <h4 id="双样本-t-检验">双样本 <span class="math inline">\(T\)</span> 检验</h4>
   <p>上述 <span class="math inline">\(T\)</span> 检验也叫单样本 <span class="math inline">\(T\)</span>
     检验，是对比转化率和某个固定值。如果我们想要对比两个不同组 <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> 的不同均值
     <span class="math inline">\(\bar{x}\)</span> 和 <span
@@ -97,10 +97,10 @@
   <p><span class="math display">\[T=\frac{\bar{x}-\bar{y}}{s_{pooled}\sqrt{1/n+1/m}}∼T_(n+m−2),\quad
       s_{pooled}^2=\frac{\sum(x_i−\bar{x})^2+\sum(y_i−\bar{y})^2}{n+m−2}\]</span></p>
   <p>有时候样本方差并不相近。这个时候可以使用 Welch's t-test，就是在分母处做一些改动，就不打公式了（懒。</p>
-  <h2 id="卡方检验">卡方检验</h2>
+  <h3 id="卡方检验">卡方检验</h3>
   <p>这里我们讨论两个卡方检验常见的场景：第一种是基于 contingency table（列联表）的 Pearson's chi-sqaure test，大部分文章里的卡方检验指的都是它。第二种 likelihood-ratio
     chi-sqaure test（似然比卡方检验），由于似然比检验这个名字比较好听，所以大家就不怎么管他叫卡方检验，但它也用到了卡方分布。</p>
-  <h3 id="pearsons-chi-square-test">Pearson's Chi-square Test</h3>
+  <h4 id="pearsons-chi-square-test">Pearson's Chi-square Test</h4>
   <p>Pearson's chi-square test 可用来对某个列联表里的数据做检验。这个表可以是各种形式，不同用途，只要它包含变量在某个组/某个区间内的样本频数。可以看几个例子:</p>
   <p>(1) 判断观测到的下单人数是否和原本的下单人数<span class="math inline">\(（100*0.1 = 10）\)</span>一致，和我们上文中的 <span
       class="math inline">\(T\)</span> 检验应用场景一样。</p>
@@ -190,7 +190,7 @@
       class="math inline">\(\nu\)</span> 等于 <span class="math inline">\(H_A\)</span> 中自由参数的数量减去 <span
       class="math inline">\(H_0\)</span> 中自由参数的数量，一般可直接套用公式 <span class="math inline">\(\nu=(\#
       rows-1)(\#cols-1)\)</span> 来计算。</p>
-  <h3><span class="math inline">\(T\)</span> 检验和卡方检验对比</h3>
+  <h4><span class="math inline">\(T\)</span> 检验和卡方检验对比</h4>
   <p>那么什么时候用卡方检验呢？对于下单转化的例子，<span class="math inline">\(T\)</span> 检验和卡方检验（第一张表）都适用，它们有什么区别？</p>
   <ol style="list-style-type: decimal">
     <li>
@@ -219,7 +219,7 @@
         检验有一个共同的假设：样本之间相互独立。在某些场景下这个假设并不成立。比如打车软件要对派单系统做测试，他们会发现司机之间存在竞争关系，并不相互独立。</p>
     </li>
   </ol>
-  <h3 id="likelihood-ratio-chi-square-test">Likelihood Ratio Chi-square Test</h3>
+  <h4 id="likelihood-ratio-chi-square-test">Likelihood Ratio Chi-square Test</h4>
   <p>经典的似然比检验也使用到了卡方检验量，因此在这里我也把它作为卡方检验的一种来讨论。回顾我们在 <span class="math inline">\(T\)</span> 检验中做的两个假设：</p>
   <p><span class="math display">\[H_0: p=0.1 \qquad H_1: p&gt;0.1 \qquad \sigma^2 未知\]</span></p>
   <p>我们用 <span class="math inline">\(\theta\)</span> 表示参数，<span class="math inline">\(\theta\)</span> 包括 <span
@@ -240,7 +240,7 @@
       class="math inline">\(\mathcal{L}\)</span> 和 <span class="math inline">\(log(\mathcal{L})\)</span> 很大，那么<span
       class="math inline">\(\hat{\theta}_1\)</span> 比 <span class="math inline">\(\hat{\theta}_0\)</span>
     更符合真实观测，我们就有更大的把握去拒绝 <span class="math inline">\(H_0\)</span>.</p>
-  <h3>LRT 适用场景</h3>
+  <h4>LRT 适用场景</h4>
   <ol start="1" style="list-style-type: decimal">
     <li>
       <p>上文提到过，LRT 并不要求数据服从于正态分布，也不要求样本之间一定相互独立。不过它也并不像 Pearson's chi-square 那样完全不依赖于分布。它要求 <span
@@ -259,17 +259,17 @@
         检验的优势有两点，一个是在数据具有正态形状时它表现更优异，在小样本上也有效力；另一个优势在于它普及很广，学习成本比较低。</p>
     </li>
   </ol>
-  <h2 id="总结">总结</h2>
+  <h3 id="总结">总结</h3>
   <p><span class="math inline">\(T\)</span> 检验适用于在样本独立同分布的假设下，对均值做检验；Pearson
     卡方检验适用于在不确定样本分布的情况下，来对比数据的频数分布；似然比检验则可以覆盖更多的场景，有更大的 Power，只是它更复杂一些，需要我们对数据的分布做出假设，还要计算 MLE.</p>
   <p>选择什么分布去做检验，似乎不那么重要。毕竟互联网并不像学术实验，不会过分追求严谨，所用数据也够大、够准确，因此用好常见的检验即可。但理解各个检验的原理和适用范围，同时去学习各样的分布，会引导我们往更大的 data
-    generating process 上去思考：数据为什么长成这样？怎么去拟合它？我们要修正的是模型和思维，而非修正指标、甚至是改变数据。这或许就是我们统计人的护城河所在了吧（泪目）。</p>
+    generating process 上去思考：数据为什么长成这样？怎么去拟合它？数据是因，指标和模型都应该是果。这或许就是我们统计人的护城河所在了吧（泪目）。</p>
   <p>
     这篇笔记有点干，干燥的干，内容基本上是我个人的梳理和复习，加上一些网络上搜到的内容。起因是在面试时被问到了这个问题，当场懵逼。很惭愧，一些自以为掌握好的东西，真正被问到的时候发现并不扎实，故而写篇博客加深一下印象。本来还打算再复习一下
     <span class="math inline">\(F\)</span> 检验（通常都是作为 <span class="math inline">\(T\)</span>
     检验的多元版本来使用，和卡方检验的场景有一些相似之处），但是马上就要期末考试（不可以再摸鱼了），那就先暂时放一下下吧，下次一定！</p>
-  <h2>参考资料</h2>
-    <p>1. <a href="https://web.stanford.edu/class/psych252/cheatsheets/chisquare.html">The chi-square test</a>
+  <h3>参考资料</h3>
+    <p>1. <a href="https://web.stanford.edu/class/psych352/cheatsheets/chisquare.html">The chi-square test</a>
     </p>
     <p>2. <a href="https://arxiv.org/abs/1808.09171">Seven proofs of
       the Pearson Chi-squared independence test and its graphical interpretation</a>
